@@ -1,0 +1,3 @@
+spring.datasource.url=jdbc:mysql://localhost:PUERTO/bodega_licores
+spring.datasource.username=TU_USUARIO
+spring.datasource.password=TU_CONTRASEÑA
