@@ -5,6 +5,11 @@ import org.springframework.stereotype.Service;
 import prog2.bodega_backend.exceptions.LicorNotFoundException;
 import prog2.bodega_backend.model.Licor;
 import prog2.bodega_backend.repository.LicorRepository;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import org.springframework.web.multipart.MultipartFile;
 
 //Lógica del CRUD
 @Service
@@ -92,6 +97,36 @@ public class LicorService {
 
         if (licor.getFoto() != null) {
             licor.setFoto(licor.getFoto().trim());
+        }
+    }
+
+    public String guardarFoto(MultipartFile archivo) {
+
+        if (archivo.isEmpty()) {
+            throw new IllegalArgumentException("No se seleccionó ninguna imagen");
+        }
+
+        if (archivo.getContentType() == null
+                || !archivo.getContentType().startsWith("image/")) {
+            throw new IllegalArgumentException("El archivo debe ser una imagen");
+        }
+
+        try {
+            Path carpeta = Paths.get("uploads/images");
+
+            // Creo la carpeta si no existe
+            Files.createDirectories(carpeta);
+
+            String nombreArchivo = archivo.getOriginalFilename();
+
+            // Guardo la imagen
+            Path destino = carpeta.resolve(nombreArchivo);
+            Files.write(destino, archivo.getBytes());
+
+            return nombreArchivo;
+
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("No se pudo guardar la imagen");
         }
     }
 

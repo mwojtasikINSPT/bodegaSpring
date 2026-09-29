@@ -10,6 +10,8 @@ import prog2.bodega_frontend.model.Licor;
 import prog2.bodega_frontend.service.LicorService;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.upload.Upload;
+import com.vaadin.flow.server.streams.UploadHandler;
 import java.util.List;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -21,13 +23,31 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
     private final LicorService licorService;
     private final ComboBox<String> tipo = new ComboBox<>("Tipo");
     private final TextField marca = new TextField("Marca");
-    private final TextField foto = new TextField("Foto");
     private Integer id;
     private final H1 titulo = new H1("Nuevo licor");
+    private String nombreFoto;
+    private Upload foto;
 
     public LicorFormView(LicorService licorService) {
 
         this.licorService = licorService;
+        // Creo el selector de imágenes
+        foto = new Upload(
+                UploadHandler.inMemory((metadata, data) -> {
+
+                    // Subo la imagen al backend
+                    nombreFoto = licorService.subirFoto(
+                            data,
+                            metadata.fileName(),
+                            metadata.contentType()
+                    );
+
+                    Notification.show("Imagen cargada: " + nombreFoto);
+                })
+        );
+
+        foto.setMaxFiles(
+                1);
 
         // Creo el título del formulario
         add(titulo);
@@ -43,12 +63,15 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
                 .distinct()
                 .sorted()
                 .toList();
+
         tipo.setItems(tipos);
 
         // Permito escribir un tipo nuevo
-        tipo.setAllowCustomValue(true);
+        tipo.setAllowCustomValue(
+                true);
         // Guardo el texto que escribo como valor del tipo
-        tipo.addCustomValueSetListener(event -> tipo.setValue(event.getDetail()));
+        tipo.addCustomValueSetListener(event
+                -> tipo.setValue(event.getDetail()));
 
         // Creo el botón para guardar
         Button guardar = new Button("Guardar");
@@ -57,7 +80,8 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
         Button cancelar = new Button("Cancelar");
 
         // Guardo el nuevo licor
-        guardar.addClickListener(event -> {
+        guardar.addClickListener(event
+                -> {
 
             String tipoIngresado = tipo.getValue();
 
@@ -71,11 +95,14 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
                 return;
             }
 
+            //debug
+            //Notification.show("Voy a guardar foto: " + nombreFoto);
+
             Licor licor = new Licor(
                     null,
                     tipoIngresado,
                     marca.getValue(),
-                    foto.getValue()
+                    nombreFoto
             );
 
             if (id == null) {
@@ -88,7 +115,8 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
 
             Notification.show("Licor guardado correctamente");
             getUI().ifPresent(ui -> ui.navigate("licores"));
-        });
+        }
+        );
 
         // Vuelvo a la lista sin guardar
         cancelar.addClickListener(event
@@ -114,7 +142,7 @@ public class LicorFormView extends VerticalLayout implements HasUrlParameter<Int
             // Cargo los datos del licor
             tipo.setValue(licor.getTipo());
             marca.setValue(licor.getMarca());
-            foto.setValue(licor.getFoto());
+            nombreFoto = licor.getFoto();
         }
     }
 }

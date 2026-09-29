@@ -1,7 +1,6 @@
 package prog2.bodega_backend.controller;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import prog2.bodega_backend.model.Licor;
-import prog2.bodega_backend.repository.LicorRepository;
+import org.springframework.web.multipart.MultipartFile;
 import prog2.bodega_backend.service.LicorService;
 
 //endpoints que consumirá el frontend
@@ -58,6 +57,11 @@ public class LicorRestController {
     @GetMapping("/licores/{id}")
     public Licor buscarPorId(@PathVariable Integer id) {
         return licorService.buscarPorId(id);
+    }
+
+    @PostMapping("/licores/foto")
+    public String subirFoto(@RequestParam("archivo") MultipartFile archivo) {
+        return licorService.guardarFoto(archivo);
     }
 
 }

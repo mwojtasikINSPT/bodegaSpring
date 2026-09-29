@@ -5,6 +5,11 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 import prog2.bodega_frontend.model.Licor;
+import java.io.IOException;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.MediaType;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 // Gestiona la comunicación HTTP con el backend.
 @Service
@@ -80,4 +85,27 @@ public class LicorService {
                 .toBodilessEntity(); //No espero contendio en la respuesta
     }
 
+    public String subirFoto(byte[] contenido, String nombreArchivo, String tipoContenido) {
+
+        // Creo el archivo que voy a enviar
+        ByteArrayResource recurso = new ByteArrayResource(contenido) {
+            @Override
+            public String getFilename() {
+                return nombreArchivo;
+            }
+        };
+
+        // Creo el formulario multipart
+        MultiValueMap<String, Object> datos = new LinkedMultiValueMap<>();
+        datos.add("archivo", recurso);
+
+        // Envío la imagen al backend
+        return restClient.post()
+                .uri("/licores/foto")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(datos)
+                .retrieve()
+                .toEntity(String.class)
+                .getBody();
+    }
 }
