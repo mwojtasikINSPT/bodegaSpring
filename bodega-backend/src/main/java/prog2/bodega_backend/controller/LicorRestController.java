@@ -2,6 +2,7 @@ package prog2.bodega_backend.controller;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import prog2.bodega_backend.model.Licor;
 import prog2.bodega_backend.repository.LicorRepository;
@@ -26,19 +28,20 @@ public class LicorRestController {
         this.licorService = licorService;
     }
 
-    @GetMapping("/buscarLicores")
+    @GetMapping("/licores")
     public List<Licor> buscarLicores(
             @RequestParam(name = "tipo", required = false) String tipo) {
 
         return licorService.buscarLicores(tipo);
     }
 
-    @PostMapping("/agregarLicor")
+    @PostMapping("/licores")
+    @ResponseStatus(HttpStatus.CREATED)
     public Licor guardarLicor(@RequestBody Licor licor) {
         return licorService.guardarLicor(licor);
     }
 
-    @PutMapping("/actualizarLicor/{id}")
+    @PutMapping("/licores/{id}")
     public Licor actualizarLicor(
             @PathVariable Integer id,
             @RequestBody Licor licor) {
@@ -46,13 +49,14 @@ public class LicorRestController {
         return licorService.actualizarLicor(id, licor);
     }
 
-    @DeleteMapping("/eliminarLicor/{id}")
+    @DeleteMapping("/licores/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminarLicor(@PathVariable Integer id) {
         licorService.eliminarLicor(id);
     }
 
-    @GetMapping("/buscarLicor/{id}")
-    public Optional<Licor> buscarPorId(@PathVariable Integer id) {
+    @GetMapping("/licores/{id}")
+    public Licor buscarPorId(@PathVariable Integer id) {
         return licorService.buscarPorId(id);
     }
 
