@@ -121,6 +121,38 @@ El servidor estará disponible en: `http://localhost:8080`
 
 ---
 
+## 🖥️ Bodega Frontend
+
+El proyecto cuenta con un frontend desarrollado con **Java, Spring Boot y Vaadin**, encargado de proporcionar la interfaz gráfica para gestionar los licores.
+
+### Tecnologías
+
+- ☕ Java 21
+- 🌱 Spring Boot 4.1.1
+- 🎨 Vaadin 25.3.0
+- 📦 Maven
+- 🔗 RestClient para la comunicación con el backend
+
+### Funcionalidades actuales
+
+- 📋 Listado de licores
+- 🔎 Filtrado por tipo
+- ➕ Alta de licores
+- ✏️ Edición de licores
+- 🗑️ Eliminación con confirmación
+- 🏷️ Incorporación de nuevos tipos de licor
+- 🖼️ Visualización de las imágenes asociadas
+
+El frontend se comunica con la API REST del backend mediante HTTP y no accede directamente a la base de datos.
+
+### Puertos
+
+- Backend: `http://localhost:8080`
+- Frontend: `http://localhost:8081`
+
+
+---
+
 ## 🔗 API REST
 
 La API utiliza una estructura REST basada en el recurso `licores`.
