@@ -35,3 +35,6 @@ build/
 
 ##Datos##
 config.properties
+
+# Archivos generados automáticamente por Vaadin
+src/main/frontend/generated/
